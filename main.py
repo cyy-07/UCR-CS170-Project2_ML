@@ -1,5 +1,35 @@
 import numpy as np
 
+#calculate distance
+def Euclidean_distance(point1, point2):
+    total = 0
+    for i in range(len(point1)):
+        diff = point1[i] - point2[i]
+        total += diff** 2
+    distance = total ** 0.5
+    return distance
+# tsetpoint_a = [1, 2, 3]
+# tsetpoint_b = [4, 6, 3]
+# print(Euclidean_distance(tsetpoint_a, tsetpoint_b))
+
+#Compare distance between the point and all other points in the dataset, return the class label as the nearest neighbor
+def nn_classify(dataset, feature_set):
+    correct_classification_number = 0
+    for i in range (len(dataset)):
+        current_sample = dataset [i, feature_set]
+        label = dataset [i, 0]
+        nearest_neighbor_label = None  #The nearest neighbor's class label
+        nearest_distance = float('inf')  #The current nearest distance, initialized to infinity.
+        for j in range (len(dataset)):
+            if j != i:  # Skip the current sample
+                distance = Euclidean_distance(current_sample, dataset[j, feature_set])    #Important! Here we only calculate distance based on the selected features.
+                if distance < nearest_distance:
+                    nearest_distance = distance
+                    nearest_neighbor_label = dataset[j, 0]  # Update the nearest neighbor's class label
+                if label == nearest_neighbor_label:
+                    correct_classification_number += 1
+                
+
 print("Welcome to Yiyang Chen's ML project2!")
 print("This project is a feature selection algorithm, using Nearest Neighbor as the classifier!")
 
