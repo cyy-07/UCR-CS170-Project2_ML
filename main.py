@@ -30,6 +30,13 @@ def nn_classify(dataset, feature_set):
             correct_classification_number += 1
     accuracy = correct_classification_number / len(dataset)
     return accuracy
+
+
+def forward_selection():
+    current_feature_set = []
+    the_best_overall_accuracy = 0
+
+def backward_elimination():
     
                 
 
