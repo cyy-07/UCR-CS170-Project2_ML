@@ -26,8 +26,11 @@ def nn_classify(dataset, feature_set):
                 if distance < nearest_distance:
                     nearest_distance = distance
                     nearest_neighbor_label = dataset[j, 0]  # Update the nearest neighbor's class label
-                if label == nearest_neighbor_label:
-                    correct_classification_number += 1
+        if label == nearest_neighbor_label:
+            correct_classification_number += 1
+    accuracy = correct_classification_number / len(dataset)
+    return accuracy
+    
                 
 
 print("Welcome to Yiyang Chen's ML project2!")
@@ -40,7 +43,7 @@ print("2) Large dataset")
 while True:
     dataset_choose = input()
     if dataset_choose == '1':
-        dataset = np.loadtxt('CS170_Small_DataSet__1.txt')
+        dataset = np.loadtxt('CS170_Small_DataSet__1.txt')#Note that Dr.Eamoon suggested me to use small and large dataset 1 because my name was not in the list.
         break
     elif dataset_choose == '2':
         dataset = np.loadtxt('CS170_Large_DataSet__1.txt')
