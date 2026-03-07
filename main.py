@@ -77,7 +77,15 @@ def backward_elimination():
         current_feature_set.append(i)       #Different from forward selection, we start with the full feature set in backward elimination here.
     the_best_overall_accuracy = 0
     the_best_overall_feature_set = current_feature_set.copy()
-    
+    for i in range(1, features_num):
+        best_accuracy_this_level = 0
+        best_feature_to_remove = None
+        for j in range(1, features_num + 1):
+            if j in current_feature_set:    
+                current_feature_set.remove(j)              #remove the feature from the current feature set temporarily.
+                accuracy = nn_classify(dataset, current_feature_set)
+                print(f"Using feature(s) {current_feature_set} accuracy is {accuracy:.2f}%")
+               
     overall_accuracy = nn_classify(dataset, current_feature_set)
     print(f'Running nearest neighbor with all {features_num} features, using "leaving-one-out" evaluation, I get an accuracy of {overall_accuracy * 100:.1f}%')
     print("Beginning search. The current feature set is full.")
