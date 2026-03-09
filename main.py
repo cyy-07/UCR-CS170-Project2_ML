@@ -70,25 +70,37 @@ def forward_selection(dataset, features_num):
     print(f"Total search time: {time.time() - start:.1f} seconds")           #Here we calculate the total search time.
 
 
-def backward_elimination():
+def backward_elimination(dataset, features_num):
+    #Start with everything, and remove a feature at each level.
     start = time.time()
     current_feature_set = []
     for i in range(1, features_num + 1):
         current_feature_set.append(i)       #Different from forward selection, we start with the full feature set in backward elimination here.
     the_best_overall_accuracy = 0
     the_best_overall_feature_set = current_feature_set.copy()
+
+    overall_accuracy = nn_classify(dataset, current_feature_set)
+    print(f'Running nearest neighbor with all {features_num} features, using "leaving-one-out" evaluation, I get an accuracy of {overall_accuracy * 100:.1f}%')
+    print("Beginning search. The current feature set is full.")
     for i in range(1, features_num):
         best_accuracy_this_level = 0
         best_feature_to_remove = None
         for j in range(1, features_num + 1):
+            #Try removing each feature from the current feature set, then calculate the accuracy, after removing that feature.
             if j in current_feature_set:    
                 current_feature_set.remove(j)              #remove the feature from the current feature set temporarily.
                 accuracy = nn_classify(dataset, current_feature_set)
                 print(f"Using feature(s) {current_feature_set} accuracy is {accuracy:.2f}%")
-               
-    overall_accuracy = nn_classify(dataset, current_feature_set)
-    print(f'Running nearest neighbor with all {features_num} features, using "leaving-one-out" evaluation, I get an accuracy of {overall_accuracy * 100:.1f}%')
-    print("Beginning search. The current feature set is full.")
+                current_feature_set.append(j)              #put feature j back to the current feature set.
+                if accuracy > best_accuracy_this_level:    
+                    best_feature_to_remove = j
+                    best_accuracy_this_level = accuracy
+        current_feature_set.remove(best_feature_to_remove)  #After we finish testing all the features in the current feature set, we remove the best feature of this level from current feature set.
+        print(f"Feature set {current_feature_set} was best, accuracy is {best_accuracy_this_level:.2f}%")
+
+    print(f"Finished search! The best feature subset is {the_best_overall_feature_set}, which has an accuracy of {the_best_overall_accuracy:.2f}%")
+    print(f"Total search time: {time.time() - start:.1f} seconds")
+
 
 print("Welcome to Yiyang Chen's ML project2!")
 print("This project is a feature selection algorithm, using Nearest Neighbor as the classifier!")
