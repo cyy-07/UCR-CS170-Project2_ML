@@ -53,20 +53,20 @@ def forward_selection(dataset, features_num):
             if j not in current_feature_set:     #consider only the features that are not in the current feature set
                 current_feature_set.append(j)              #add the feature to the current feature set temporarily
                 accuracy = nn_classify(dataset, current_feature_set)
-                print(f"Using feature(s) {current_feature_set} accuracy is {accuracy:.2f}%")
+                print(f"Using feature(s) {current_feature_set} accuracy is {accuracy * 100:.2f}%")
                 current_feature_set.remove(j)              #debug: remove the feature from the current (temporary) feature set.
                 if accuracy > best_accuracy_this_level:    #if the accuracy is better than the best accuracy we have now, update the best accuracy. 
                     best_feature_this_level = j
                     best_accuracy_this_level = accuracy
         #After we finish testing all the features that are not in the current feature set, we add the best feature of this level to current feature set.
         current_feature_set.append(best_feature_this_level)  
-        print(f"Feature set {current_feature_set} was best, accuracy is {best_accuracy_this_level:.2f}%")
+        print(f"Feature set {current_feature_set} was best, accuracy is {best_accuracy_this_level * 100:.2f}%")
         if best_accuracy_this_level > the_best_overall_accuracy:
             the_best_overall_accuracy = best_accuracy_this_level
             the_best_overall_feature_set = current_feature_set.copy()
         else:
-            print("(Warning! At this level, the best accuracy is worse than the best overall accuracy! Continue search to see if we can find a better feature subset.(Avoiding local maximum!))")
-    print(f"Finished search! The best feature subset is {the_best_overall_feature_set}, which has an accuracy of {the_best_overall_accuracy:.2f}%")
+            print("Warning! At this level, the best accuracy is worse than the best overall accuracy! Continue search to see if we can find a better feature subset.(Avoiding local maximum!)")
+    print(f"Finished search! The best feature subset is {the_best_overall_feature_set}, which has an accuracy of {the_best_overall_accuracy * 100:.2f}%")
     print(f"Total search time: {time.time() - start:.1f} seconds")           #Here we calculate the total search time.
 
 
@@ -90,15 +90,19 @@ def backward_elimination(dataset, features_num):
             if j in current_feature_set:    
                 current_feature_set.remove(j)              #remove the feature from the current feature set temporarily.
                 accuracy = nn_classify(dataset, current_feature_set)
-                print(f"Using feature(s) {current_feature_set} accuracy is {accuracy:.2f}%")
+                print(f"Using feature(s) {current_feature_set} accuracy is {accuracy * 100:.2f}%")
                 current_feature_set.append(j)              #put feature j back to the current feature set.
                 if accuracy > best_accuracy_this_level:    
                     best_feature_to_remove = j
                     best_accuracy_this_level = accuracy
         current_feature_set.remove(best_feature_to_remove)  #After we finish testing all the features in the current feature set, we remove the best feature of this level from current feature set.
-        print(f"Feature set {current_feature_set} was best, accuracy is {best_accuracy_this_level:.2f}%")
-
-    print(f"Finished search! The best feature subset is {the_best_overall_feature_set}, which has an accuracy of {the_best_overall_accuracy:.2f}%")
+        print(f"Feature set {current_feature_set} was best, accuracy is {best_accuracy_this_level * 100:.2f}%")
+        if best_accuracy_this_level > the_best_overall_accuracy:
+            the_best_overall_accuracy = best_accuracy_this_level
+            the_best_overall_feature_set = current_feature_set.copy()
+        else:
+            print("Warning! At this level, the best accuracy is worse than the best overall accuracy! Continue search to see if we can find a better feature subset.(Avoiding local maximum!)")
+    print(f"Finished search! The best feature subset is {the_best_overall_feature_set}, which has an accuracy of {the_best_overall_accuracy * 100:.2f}%")
     print(f"Total search time: {time.time() - start:.1f} seconds")
 
 
@@ -112,7 +116,7 @@ print("2) Large dataset")
 while True:
     dataset_choose = input()
     if dataset_choose == '1':
-        dataset = np.loadtxt('CS170_Small_DataSet__1.txt')#Note that Dr.Eamoon suggested me to use small and large dataset 1 because my name was not in the list.
+        dataset = np.loadtxt('SanityCheck_DataSet__1.txt')#Note that Dr.Eamoon suggested me to use small and large dataset 1 because my name was not in the list.
         break
     elif dataset_choose == '2':
         dataset = np.loadtxt('CS170_Large_DataSet__1.txt')
@@ -133,3 +137,7 @@ while True:
         break
     else:
         print("Invalid input, please choose 1 or 2 again.")
+if algorithm_choose == "1":
+    forward_selection(dataset, features_num)
+elif algorithm_choose == "2":
+    backward_elimination(dataset, features_num)
